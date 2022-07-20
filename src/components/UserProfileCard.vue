@@ -26,30 +26,30 @@
             </li>
           </ul>
           <p></p>
-          <form action="/following/3" method="POST" style="display: contents">
-            <button v-if="isAuthenticated" class="btn btn-danger">Edit</button>
+          <template v-if="isAuthenticated">
+              <router-link to="user/edit" class="btn btn-danger">
+                Edit
+              </router-link>
+          </template>
 
-            <div 
-            v-else
-            class="button-area">
-              <button
-                v-if="isFollowed"
-                @click.prevent.stop="removeFollowing"
-                type="submit"
-                class="btn btn-danger"
-              >
-                取消追蹤
-              </button>
-              <button
-                v-else
-                @click.prevent.stop="addFollowing"
-                type="submit"
-                class="btn btn-primary"
-              >
-                追蹤
-              </button>
-            </div>
-          </form>
+          <template v-else class="button-area">
+            <button
+              v-if="isFollowed"
+              @click.prevent.stop="removeFollowing"
+              type="submit"
+              class="btn btn-danger"
+            >
+              取消追蹤
+            </button>
+            <button
+              v-else
+              @click.prevent.stop="addFollowing"
+              type="submit"
+              class="btn btn-primary"
+            >
+              追蹤
+            </button>
+          </template>
 
           <p></p>
         </div>

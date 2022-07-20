@@ -60,6 +60,14 @@ const routes = [
   },
 
   {
+    path: "/user/edit",
+    name: "user-edit",
+    component: () => import("../views/UserEdit.vue"),
+  },
+
+  
+
+  {
     path: "/users/Top",
     name: "users-top",
     component: () => import("../views/UsersTop.vue"),
@@ -68,12 +76,6 @@ const routes = [
     path: "/admin",
     exact: true,
     redirection: "../admin/restaurants",
-  },
-
-  {
-    path: "/admin/user",
-    name: "user-edit",
-    component: () => import("../views/UserEdit.vue"),
   },
 
   {
@@ -98,6 +100,12 @@ const routes = [
     path: "/admin/restaurants/:id",
     name: "admin-restaurant",
     component: () => import("../views/AdminRestaurant.vue"),
+  },
+
+  {
+    path: "/admin/categories",
+    name: "admin-categories",
+    component: () => import("../views/AdminCategories.vue"),
   },
 
   {
