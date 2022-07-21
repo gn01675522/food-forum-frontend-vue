@@ -47,7 +47,10 @@
               type="text"
               class="form-control"
             />
-            <span v-show="category.isEditing" class="cancel"> ✕ </span>
+            <span 
+            v-show="category.isEditing" 
+            class="cancel"
+            @click.stop.prevent="handleCancel(category.id)"> ✕ </span>
           </td>
           <td class="d-flex justify-content-between">
             <button
@@ -62,6 +65,7 @@
               v-show="category.isEditing"
               type="button"
               class="btn btn-link mr-2"
+              @click.stop.prevent="updateCategory({ categoryId: category.id, name: category.name})"
             >
               Save
             </button>
@@ -135,6 +139,7 @@ export default {
       this.categories = dummyData.categories.map((category) => ({
         ...category,
         isEditing: false,
+        nameCached: ''
       }));
     },
     createCategory() {
@@ -156,16 +161,35 @@ export default {
         (category) => category.id !== categoryId
       );
     },
+
+    updateCategory({categoryId, name}) {
+      this.toggleIsEditing(categoryId)
+      console.log(name)
+    },
+
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map(category => {
         if(category.id === categoryId) {
           return {
             ...category,
-            isEditing: !category.isEditing
+            isEditing: !category.isEditing,
+            nameCached: category.name
           }
         }
         return category
       })
+    },
+    handleCancel(categoryId) {
+      this.categories = this.categories.map(category => {
+        if(category.id === categoryId) {
+          return {
+            ...category,
+            name: category.nameCached
+          }
+        }
+        return category
+      })
+      this.toggleIsEditing(categoryId)
     }
   },
 };

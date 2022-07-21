@@ -4,6 +4,7 @@ import NotFound from "../views/NotFound.vue";
 import SignIn from "../views/SignIn.vue";
 import Restaurants from "./../views/Restaurants.vue";
 import User from "./../views/User.vue";
+// import AdminUsers from "./../views/AdminUsers.vue"
 
 Vue.use(VueRouter);
 
@@ -65,17 +66,22 @@ const routes = [
     component: () => import("../views/UserEdit.vue"),
   },
 
-  
-
   {
     path: "/users/Top",
     name: "users-top",
     component: () => import("../views/UsersTop.vue"),
   },
+
   {
     path: "/admin",
     exact: true,
     redirection: "../admin/restaurants",
+  },
+
+  {
+    path: "/admin/users",
+    name: "admin-users",
+    components: () => import("../views/AdminUsers.vue"),
   },
 
   {
