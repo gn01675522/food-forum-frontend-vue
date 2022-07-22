@@ -51,6 +51,9 @@
 </template>
 
 <script>
+import authorizationAPI from "./../apis/authorization";
+import { Toast } from "../utils/helpers"
+
 export default {
   data() {
     return {
@@ -60,13 +63,40 @@ export default {
   },
   methods: {
     handleSubmit() {
-      console.log(
-        "handleSubmit",
-        JSON.stringify({
+      if(!this.email || !this.password) {
+        Toast.fire({
+          icon: 'warning',
+          title: '請填入 email 及 password',
+        })
+        return
+      }
+      // TODO: 向後端驗證使用者資訊是否合法
+      authorizationAPI
+        .signin({
           email: this.email,
           password: this.password,
         })
-      );
+        .then((response) => {
+          const { data } = response;
+
+          if(data.status !== 'success') {
+            throw new Error(data.message)
+          }
+
+          localStorage.setItem("token", data.token);
+
+          this.$router.push('/restaurants')
+        }).catch(error =>{
+          this.password = ''
+          
+          //顯示錯誤提示
+          Toast.fire({
+            icon: 'warning',
+            title: '輸入的帳號密碼有誤',
+          })
+
+          console.log('error', error)
+        })
     },
   },
 };
