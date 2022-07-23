@@ -2,7 +2,7 @@
 <template>
   <div class="col-3">
     <router-link to="/user">
-      <img src="https://i.imgur.com/Gs5Ws47.jpg" width="140px" height="140px" />
+      <img :src="tatsujin.image" width="140px" height="140px" />
     </router-link>
     <h2>{{ tatsujin.name }}</h2>
     <span class="badge badge-secondary"
