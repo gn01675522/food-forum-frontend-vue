@@ -90,6 +90,7 @@ export default {
   data() {
     return {
       isFollowed: this.initial_isFollowed,
+      isAuthenticated: false,
     };
   },
 

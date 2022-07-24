@@ -17,20 +17,24 @@
           <td>{{ user.isAdmin ? "admin" : "user" }}</td>
           <td>
             <button
-              v-if="user.isAdmin && currentUser.profile.id !== user.id"
+              v-if="user.isAdmin && currentUser.id !== user.id"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleUserRole(user.id)"
+              @click.stop.prevent="
+                toggleUserRole(user.id, { isAdmin: user.isAdmin })
+              "
             >
               set as user
             </button>
 
             <button
               v-else
-              :disabled="user.id === currentUser.profile.id"
+              :disabled="user.id === currentUser.id"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleUserRole(user.id)"
+              @click.stop.prevent="
+                toggleUserRole(user.id, { isAdmin: user.isAdmin })
+              "
             >
               set as admin
             </button>
@@ -43,55 +47,9 @@
 
 <script>
 import AdminNav from "./../components/AdminNav.vue";
-
-const dummyData = {
-  users: [
-    {
-      id: 1,
-      name: "root",
-      email: "root@example.com",
-      password: "$2a$10$AmK/JTPO/Ufeoj3nCR/K4.D8xtWYBZyTOxjzpNohkcpdOi0QlKznS",
-      isAdmin: true,
-      image: null,
-      createdAt: "2022-07-07T12:57:22.000Z",
-      updatedAt: "2022-07-07T12:57:22.000Z",
-    },
-    {
-      id: 2,
-      name: "user1",
-      email: "user1@example.com",
-      password: "$2a$10$HFg9hVY8F07tw.WplbE14uVEoBIU4pSKry3tDk7yzLvmib/nY1oxq",
-      isAdmin: false,
-      image: null,
-      createdAt: "2022-07-07T12:57:22.000Z",
-      updatedAt: "2022-07-07T12:57:22.000Z",
-    },
-    {
-      id: 3,
-      name: "user2",
-      email: "user2@example.com",
-      password: "$2a$10$prmhBEKhs8ilsCXnWTXnkOxIiHSReV9EUFDzQJuuF1KqKLOeMSF7a",
-      isAdmin: false,
-      image: null,
-      createdAt: "2022-07-07T12:57:23.000Z",
-      updatedAt: "2022-07-07T12:57:23.000Z",
-    },
-  ],
-};
-
-const dummyUser = {
-  profile: {
-    id: 3,
-    name: "user2",
-    email: "user2@example.com",
-    password: "$2a$10$prmhBEKhs8ilsCXnWTXnkOxIiHSReV9EUFDzQJuuF1KqKLOeMSF7a",
-    isAdmin: false,
-    image: null,
-    createdAt: "2022-07-07T12:57:23.000Z",
-    updatedAt: "2022-07-07T12:57:23.000Z",
-  },
-};
-// 暫時用的資料，正常情況來說要透過 api 去取得 user 資料
+import adminAPI from "./../apis/admin";
+import { Toast } from "../utils/helpers";
+import { mapState } from "vuex";
 
 export default {
   name: "AdminUsers",
@@ -101,24 +59,57 @@ export default {
   data() {
     return {
       users: [],
-      currentUser: {},
     };
   },
   created() {
     this.fetchUser();
   },
   methods: {
-    fetchUser() {
-      this.users = dummyData.users;
-      this.currentUser = dummyUser;
+    async fetchUser() {
+      try {
+        const { data } = await adminAPI.getAdminUsers();
+        this.users = data.users;
+        console.log("api-data", data);
+        console.log("this-user", this.users[0].id);
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得使用者清單，請稍後再試",
+        });
+      }
     },
-    toggleUserRole(userId) {
+    async toggleUserRole(userId, { isAdmin }) {
+      try {
+        const { data } = await adminAPI.renewUserRole(userId, {
+          isAdmin: String(!isAdmin),
+        });
+        console.log("data", data);
+        this.users = this.users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isAdmin: !user.isAdmin,
+            };
+          }
+          return user;
+        });
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法更新權限，請稍後再試",
+        });
+      }
       this.users.filter((user) => {
         if (user.id === userId) {
           return (user.isAdmin = !user.isAdmin);
         }
       });
     },
+  },
+  computed: {
+    ...mapState(["currentUser"]),
   },
 };
 </script>

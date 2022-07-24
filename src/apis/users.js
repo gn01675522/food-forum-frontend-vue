@@ -61,4 +61,11 @@ export default {
       },
     });
   },
+  update({ formData, userId }) {
+    return apiHelper.delete(`/users/${userId}`, formData, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+  },
 };

@@ -69,4 +69,22 @@ export default {
       });
     },
   },
+  getAdminUsers() {
+    return apiHelper.get(`/admin/users`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+  },
+  renewUserRole(id, { isAdmin }) {
+    return apiHelper.put(
+      `/admin/users/${id}`,
+      { isAdmin },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+  },
 };
