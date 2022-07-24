@@ -7,4 +7,9 @@ export default {
       password,
     });
   },
+  signup({ formData }) {
+    return apiHelper.post("/signup", {
+      ...formData,
+    });
+  },
 };

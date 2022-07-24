@@ -4,7 +4,6 @@ import NotFound from "../views/NotFound.vue";
 import SignIn from "../views/SignIn.vue";
 import Restaurants from "./../views/Restaurants.vue";
 import User from "./../views/User.vue";
-// import AdminUsers from "./../views/AdminUsers.vue"
 
 Vue.use(VueRouter);
 
