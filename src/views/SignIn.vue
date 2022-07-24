@@ -97,6 +97,9 @@ export default {
         localStorage.setItem("token", data.token);
         // 將 回應內的 token 存入 localStorage 裡面
 
+        // 透過 setCurrentUser 把使用者資料存入 Vuex 的 state 中
+        this.$store.commit('setCurrentUser', data.user)
+
         this.$router.push("/restaurants");
         // 若程式碼至此則判斷登入成功，直接導向 /restaurants 頁面
       } 

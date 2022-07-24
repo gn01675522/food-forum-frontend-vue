@@ -18,7 +18,11 @@
     <div id="navbarSupportedContent" class="navbar-collapse collapse">
       <div class="ml-auto d-flex align-items-center">
         <!-- is user is admin -->
-        <router-link to="admin/restaurants" class="text-white mr-3" v-if="currentUser.isAdmin">
+        <router-link
+          to="admin/restaurants"
+          class="text-white mr-3"
+          v-if="currentUser.isAdmin"
+        >
           管理員後台
         </router-link>
 
@@ -32,8 +36,8 @@
             class="btn btn-sm btn-outline-success my-2 my-sm-0"
           >
             登出
-          </button> </template
-        >
+          </button>
+        </template>
       </div>
     </div>
   </nav>
@@ -41,44 +45,10 @@
 
 <script>
 /* eslint-disable */
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "管理者",
-    email: "root@example.com",
-    image: "https://i.pravatar.cc/300",
-    isAdmin: true,
-  },
-  isAuthenticated: true,
-};
-
+import { mapState } from "vuex";
 export default {
-  data() {
-    return {
-      currentUser: {
-        id: -1,
-        name: "",
-        email: "",
-        image: "",
-        isAdmin: false,
-      },
-      isAuthenticated: false,
-    };
+  computed: {
+    ...mapState(["currentUser", "isAuthenticated"]),
   },
-
-  created() {
-    this.fetchUser();
-  },
-
-  methods: {
-    fetchUser() {
-      this.currentUser = {
-        ...this.currentUser,
-        ...dummyUser.currentUser,
-      };
-      this.isAuthenticated = dummyUser.isAuthenticated;
-    },
-  },
-  
 };
 </script>

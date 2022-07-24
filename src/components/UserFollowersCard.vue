@@ -2,10 +2,10 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{ followers.length }}</strong> followers (追隨者)
+      <strong>{{ initial_followers.length }}</strong> followers (追隨者)
     </div>
     <div class="card-body">
-      <div v-for="follower in followers" :key="follower.id">
+      <div v-for="follower in initial_followers" :key="follower.id">
         <img :src="follower.image" alt="" width="68" height="68" />
       </div>
     </div>
@@ -19,15 +19,10 @@ export default {
   name: "UserFollowersCard",
   mixins: [emptyImageFilter],
   props: {
-    initial_profile: {
-      type: Object,
+    initial_followers: {
+      type: Array,
       required: true,
     },
-  },
-  data() {
-    return {
-      followers: this.initial_profile.Followers,
-    };
   },
 };
 </script>

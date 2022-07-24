@@ -3,39 +3,44 @@
   <div class="card mb-3">
     <div class="row no-gutters">
       <div class="col-md-4">
-        <img :src="profile.image" width="300px" height="300px" />
+        <img
+          :src="initial_profile.image | emptyImage"
+          width="300px"
+          height="300px"
+        />
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <h5 class="card-title">{{ profile.name }}</h5>
-          <p class="card-text">{{ profile.email }}</p>
+          <h5 class="card-title">{{ initial_profile.name }}</h5>
+          <p class="card-text">{{ initial_profile.email }}</p>
           <ul class="list-unstyled list-inline">
             <li>
-              <strong>{{ profile.Comments.length }}</strong> 已評論餐廳
+              <strong>{{ initial_profile.Comments.length }}</strong> 已評論餐廳
             </li>
             <li>
-              <strong>{{ profile.FavoritedRestaurants.length }}</strong>
+              <strong>{{ initial_profile.FavoritedRestaurants.length }}</strong>
               收藏的餐廳
             </li>
             <li>
-              <strong>{{ profile.Followings.length }}</strong> followings
-              (追蹤者)
+              <strong>{{ initial_profile.Followings.length }}</strong>
+              followings (追蹤者)
             </li>
             <li>
-              <strong>{{ profile.Followers.length }}</strong> followers (追隨者)
+              <strong>{{ initial_profile.Followers.length }}</strong> followers
+              (追隨者)
             </li>
           </ul>
           <p></p>
           <template v-if="isAuthenticated">
-              <router-link to="user/edit" class="btn btn-danger">
-                Edit
-              </router-link>
+            <router-link to="user/edit" class="btn btn-danger">
+              Edit
+            </router-link>
           </template>
 
           <template v-else class="button-area">
             <button
               v-if="isFollowed"
-              @click.prevent.stop="removeFollowing"
+              @click.prevent.stop="removeFollowing(initial_profile.id)"
               type="submit"
               class="btn btn-danger"
             >
@@ -43,7 +48,7 @@
             </button>
             <button
               v-else
-              @click.prevent.stop="addFollowing"
+              @click.prevent.stop="addFollowing(initial_profile.id)"
               type="submit"
               class="btn btn-primary"
             >
@@ -60,14 +65,9 @@
 
 <script>
 import { emptyImageFilter } from "./../utils/mixins";
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: "root",
-    email: "root@example.com",
-  },
-};
+import userAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 
 export default {
   name: "UserProfileCard",
@@ -77,14 +77,19 @@ export default {
       type: Object,
       required: true,
     },
+    currentUserId: {
+      type: Number,
+      required: true,
+    },
+    initial_isFollowed: {
+      type: Boolean,
+      required: true,
+    }
   },
 
   data() {
     return {
-      profile: this.initial_profile,
-      currentUser: dummyUser.currentUser,
-      isFollowed: false,
-      isAuthenticated: false,
+      isFollowed: this.initial_isFollowed,
     };
   },
 
@@ -93,22 +98,49 @@ export default {
   },
 
   methods: {
-    addFollowing() {
-      this.isFollowed = true;
-      this.isAuthenticated = true;
+    async addFollowing(userId) {
+      try {
+        const { data } = await userAPI.addFollowing({ userId })
+        console.log(data)
+        this.isFollowed = true;
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法加入追蹤，請稍後再試",
+        });
+      }
     },
 
-    removeFollowing() {
+    async removeFollowing(userId) {
+      try {
+        const { data } = await userAPI.deleteFollowing({ userId })
+        console.log(data)
+        this.isFollowed = false;
+      } catch (error) {
+        console.log("error", error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取消追蹤，請稍後再試",
+        });
+      }
       this.isFollowed = false;
     },
 
     authenticated() {
-      if (this.currentUser.id === this.profile.id) {
+      if (this.currentUserId === this.initial_profile.id) {
         this.isAuthenticated = true;
-        console.log(this.currentUser.id);
       } else {
-        console.log(this.currentUser.id);
+        this.isAuthenticated = false;
       }
+    },
+  },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  watch: {
+    initialIsFollowed (isFollowed) {
+      this.isFollowed = isFollowed;
     },
   },
 };

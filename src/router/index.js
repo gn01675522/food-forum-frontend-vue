@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 import NotFound from "../views/NotFound.vue";
 import SignIn from "../views/SignIn.vue";
 import Restaurants from "./../views/Restaurants.vue";
-import User from "./../views/User.vue";
+import store from "./../store";
 
 Vue.use(VueRouter);
 
@@ -54,13 +54,13 @@ const routes = [
   },
 
   {
-    path: "/user/",
+    path: "/users/:id",
     name: "user",
-    component: User,
+    component: () => import("../views/User.vue"),
   },
 
   {
-    path: "/user/edit",
+    path: "/users/:id/edit",
     name: "user-edit",
     component: () => import("../views/UserEdit.vue"),
   },
@@ -123,6 +123,12 @@ const routes = [
 const router = new VueRouter({
   linkExactActiveClass: "active",
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  console.log("beforeEach -- dispatch fetchCurrentUser");
+  store.dispatch("fetchCurrentUser");
+  next();
 });
 
 export default router;

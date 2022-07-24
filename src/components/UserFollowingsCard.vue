@@ -2,10 +2,10 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{ followings.length }}</strong> followings (追蹤者)
+      <strong>{{ initial_followings.length }}</strong> followings (追蹤者)
     </div>
     <div class="card-body" style="display: flex">
-      <div v-for="following in followings" :key="following.id">
+      <div v-for="following in initial_followings" :key="following.id">
         <img :src="following.image" alt="" width="68" height="68" />
       </div>
     </div>
@@ -19,15 +19,10 @@ export default {
   name: "UserFollowingsCard",
   mixins: [emptyImageFilter],
   props: {
-    initial_profile: {
-      type: Object,
+    initial_followings: {
+      type: Array,
       required: true,
     },
-  },
-  data() {
-    return {
-      followings: this.initial_profile.Followings,
-    };
   },
 };
 </script>

@@ -10,7 +10,7 @@
     <div class="col-lg-4">
       <img
         class="img-responsive center-block"
-        src="https://loremflickr.com/320/240/food,dessert,restaurant/"
+        :src="restaurant.image"
         style="width: 250px; margin-bottom: 25px"
       />
       <div class="contact-info-wrap">
@@ -33,11 +33,12 @@
     </div>
     <div class="col-lg-8">
       <p>{{ restaurant.description }}</p>
-      <router-link 
-      to="/restaurants/:id/dashboard"
-      class="btn btn-primary btn-border mr-2" 
+      <router-link
+        to="/restaurants/:id/dashboard"
+        class="btn btn-primary btn-border mr-2"
       >
-      Dashboard</router-link>
+        Dashboard</router-link
+      >
 
       <button
         v-if="restaurant.isFavorited"
@@ -90,6 +91,14 @@ export default {
     return {
       restaurant: this.initial_restaurant,
     };
+  },
+  watch: {
+    initialRestaurant(newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue,
+      };
+    },
   },
   methods: {
     addFavorite() {
